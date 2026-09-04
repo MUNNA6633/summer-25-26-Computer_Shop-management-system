@@ -10,7 +10,7 @@ $statusErr = "";
 
 $isValid = false;
 
-$statusOptions = ["Pending", "Shipped", "Delivered"];
+$statusOptions = ["Pending", "Shipped", "Delivered", "Cancelled"];
 
 function cleanInput($data)
 {
@@ -42,9 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $isValid = !$orderIdErr && !$statusErr;
 
+    // Only update the database once every field passes validation
     if ($isValid) {
         require "db.php";
 
+        // Check the order exists first, since affected_rows() would also
+        // read as 0 if the status is set to the value it already has
         $checkStmt = mysqli_prepare($conn, "SELECT id FROM deliveries WHERE order_id = ?");
         mysqli_stmt_bind_param($checkStmt, "s", $order_id);
         mysqli_stmt_execute($checkStmt);

@@ -55,6 +55,7 @@ unset($_SESSION['flash']);
                 $cls = "status-pending";
                 if ($row['status'] === "Shipped") $cls = "status-shipped";
                 if ($row['status'] === "Delivered") $cls = "status-delivered";
+                if ($row['status'] === "Cancelled") $cls = "status-damaged";
             ?>
             <tr>
                 <td><?= $row['order_id']; ?></td>
