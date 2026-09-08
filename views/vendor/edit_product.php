@@ -1,14 +1,14 @@
-<?php require_once "edit_product_process.php"; ?>
+<?php require_once __DIR__ . "/../../controllers/vendor_controller/edit_product_process.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Edit Product - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
 
     <div class="container">
         <h2>Edit Product</h2>

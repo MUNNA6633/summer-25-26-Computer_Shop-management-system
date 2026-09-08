@@ -52,28 +52,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isValid = !$productErr && !$damageQtyErr && !$noteErr;
 
     if ($isValid) {
-        require "db.php";
+        require __DIR__ . "/../../config/config.php";
+        require __DIR__ . "/../../models/vendor_model.php";
 
         $damage_qty_int = (int)$damage_qty;
 
-        $stmt = mysqli_prepare(
-            $conn,
-            "INSERT INTO damage_reports (product_name, damage_qty, note) VALUES (?, ?, ?)"
-        );
-        mysqli_stmt_bind_param($stmt, "sis", $product, $damage_qty_int, $note);
+        $result = insert_damage_report($conn, $product, $damage_qty_int, $note);
+        mysqli_close($conn);
 
-        if (mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            mysqli_close($conn);
-
+        if ($result === true) {
             $_SESSION['flash'] = "Damage report for \"$product\" saved successfully.";
             header('Location: damage_product.php');
             exit;
         } else {
             $isValid = false;
-            $productErr = "Database error: " . mysqli_stmt_error($stmt);
-            mysqli_stmt_close($stmt);
-            mysqli_close($conn);
+            $productErr = "Database error: " . $result;
         }
     }
 }

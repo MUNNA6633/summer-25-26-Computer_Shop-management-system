@@ -4,16 +4,9 @@ session_start();
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
 
-require "db.php";
-$result = mysqli_query(
-    $conn,
-    "SELECT id, name, category, wholesale_price, retail_price, quantity FROM products ORDER BY id DESC"
-);
-$products = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $products[] = $row;
-}
-mysqli_free_result($result);
+require __DIR__ . "/../../config/config.php";
+require __DIR__ . "/../../models/vendor_model.php";
+$products = get_products($conn);
 mysqli_close($conn);
 ?>
 <!DOCTYPE html>
@@ -21,11 +14,11 @@ mysqli_close($conn);
 <head>
     <meta charset="UTF-8">
     <title>Manage Products - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
 
     <div class="container">
         <h2>Manage Products</h2>

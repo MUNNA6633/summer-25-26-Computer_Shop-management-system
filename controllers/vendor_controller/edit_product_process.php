@@ -1,6 +1,7 @@
 <?php
 session_start();
-require "db.php";
+require __DIR__ . "/../../config/config.php";
+require __DIR__ . "/../../models/vendor_model.php";
 
 // Get the product ID from either the URL (GET, first visit) or the
 // hidden form field (POST, after submitting changes)
@@ -92,23 +93,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isValid = !$nameErr && !$categoryErr && !$wholesaleErr && !$retailErr && !$quantityErr;
 
     if ($isValid) {
-        $stmt = mysqli_prepare(
-            $conn,
-            "UPDATE products SET name = ?, category = ?, wholesale_price = ?, retail_price = ?, quantity = ? WHERE id = ?"
-        );
-        mysqli_stmt_bind_param(
-            $stmt,
-            "ssddii",
-            $name,
-            $category,
-            $wholesale_price,
-            $retail_price,
-            $quantity,
-            $id
-        );
+        $result = update_product($conn, $id, $name, $category, $wholesale_price, $retail_price, $quantity);
 
-        if (mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
+        if ($result === true) {
             mysqli_close($conn);
 
             $_SESSION['flash'] = "Product \"$name\" updated successfully.";
@@ -116,29 +103,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         } else {
             $isValid = false;
-            $nameErr = "Database error: " . mysqli_stmt_error($stmt);
-            mysqli_stmt_close($stmt);
+            $nameErr = "Database error: " . $result;
         }
     }
 
 } else {
     // First visit (GET): load the existing product so the form is pre-filled
-    $stmt = mysqli_prepare(
-        $conn,
-        "SELECT name, category, wholesale_price, retail_price, quantity FROM products WHERE id = ?"
-    );
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $name, $category, $wholesale_price, $retail_price, $quantity);
+    $product = get_product($conn, $id);
 
-    if (!mysqli_stmt_fetch($stmt)) {
+    if (!$product) {
         // No product with this ID
-        mysqli_stmt_close($stmt);
         mysqli_close($conn);
         header('Location: manage_products.php');
         exit;
     }
-    mysqli_stmt_close($stmt);
+    $name = $product['name'];
+    $category = $product['category'];
+    $wholesale_price = $product['wholesale_price'];
+    $retail_price = $product['retail_price'];
+    $quantity = $product['quantity'];
 }
 
 mysqli_close($conn);

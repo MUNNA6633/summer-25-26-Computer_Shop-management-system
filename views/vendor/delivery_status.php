@@ -1,5 +1,5 @@
 <?php
-require_once "delivery_status_process.php";
+require_once __DIR__ . "/../../controllers/vendor_controller/delivery_status_process.php";
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
@@ -9,11 +9,11 @@ unset($_SESSION['flash']);
 <head>
     <meta charset="UTF-8">
     <title>Check Delivery Status - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
 
     <div class="container">
         <h2>Update Delivery Status</h2>
@@ -49,9 +49,11 @@ unset($_SESSION['flash']);
                 <th>Last Updated</th>
             </tr>
             <?php
-            require "db.php";
-            $result = mysqli_query($conn, "SELECT * FROM deliveries ORDER BY updated_at DESC");
-            while ($row = mysqli_fetch_assoc($result)):
+            require __DIR__ . "/../../config/config.php";
+            require __DIR__ . "/../../models/vendor_model.php";
+            $deliveries = get_deliveries($conn);
+            mysqli_close($conn);
+            foreach ($deliveries as $row):
                 $cls = "status-pending";
                 if ($row['status'] === "Shipped") $cls = "status-shipped";
                 if ($row['status'] === "Delivered") $cls = "status-delivered";
@@ -63,9 +65,7 @@ unset($_SESSION['flash']);
                 <td><?= $row['updated_at']; ?></td>
             </tr>
             <?php
-            endwhile;
-            mysqli_free_result($result);
-            mysqli_close($conn);
+            endforeach;
             ?>
         </table>
     </div>

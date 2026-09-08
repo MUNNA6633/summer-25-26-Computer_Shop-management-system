@@ -44,38 +44,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Only update the database once every field passes validation
     if ($isValid) {
-        require "db.php";
+        require __DIR__ . "/../../config/config.php";
+        require __DIR__ . "/../../models/vendor_model.php";
 
         // Check the order exists first, since affected_rows() would also
         // read as 0 if the status is set to the value it already has
-        $checkStmt = mysqli_prepare($conn, "SELECT id FROM deliveries WHERE order_id = ?");
-        mysqli_stmt_bind_param($checkStmt, "s", $order_id);
-        mysqli_stmt_execute($checkStmt);
-        mysqli_stmt_store_result($checkStmt);
-
-        if (mysqli_stmt_num_rows($checkStmt) === 0) {
+        if (!delivery_exists($conn, $order_id)) {
             $isValid = false;
             $orderIdErr = "Order ID not found.";
-            mysqli_stmt_close($checkStmt);
             mysqli_close($conn);
         } else {
-            mysqli_stmt_close($checkStmt);
+            $result = update_delivery_status($conn, $order_id, $status);
+            mysqli_close($conn);
 
-            $stmt = mysqli_prepare($conn, "UPDATE deliveries SET status = ? WHERE order_id = ?");
-            mysqli_stmt_bind_param($stmt, "ss", $status, $order_id);
-
-            if (mysqli_stmt_execute($stmt)) {
-                mysqli_stmt_close($stmt);
-                mysqli_close($conn);
-
+            if ($result === true) {
                 $_SESSION['flash'] = "Order \"$order_id\" status updated to $status.";
                 header('Location: delivery_status.php');
                 exit;
             } else {
                 $isValid = false;
-                $orderIdErr = "Database error: " . mysqli_stmt_error($stmt);
-                mysqli_stmt_close($stmt);
-                mysqli_close($conn);
+                $orderIdErr = "Database error: " . $result;
             }
         }
     }

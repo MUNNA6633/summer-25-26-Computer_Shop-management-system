@@ -80,35 +80,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isValid = !$nameErr && !$categoryErr && !$wholesaleErr && !$retailErr && !$quantityErr;
 
     if ($isValid) {
-        require "db.php";
+        require __DIR__ . "/../../config/config.php";
+        require __DIR__ . "/../../models/vendor_model.php";
 
-        $stmt = mysqli_prepare(
-            $conn,
-            "INSERT INTO products (name, category, wholesale_price, retail_price, quantity) VALUES (?, ?, ?, ?, ?)");
+        $result = insert_product($conn, $name, $category, $wholesale_price, $retail_price, $quantity);
+        mysqli_close($conn);
 
-        mysqli_stmt_bind_param(
-            $stmt,
-            "ssddi",
-            $name,
-            $category,
-            $wholesale_price,
-            $retail_price,
-            $quantity
-        );
-
-        if (mysqli_stmt_execute($stmt))
-           {
-            mysqli_stmt_close($stmt);
-            mysqli_close($conn);
-
+        if ($result === true) {
             $_SESSION['flash'] = "Product \"$name\" added successfully.";
             header('Location: add_product.php');
             exit;
         } else {
             $isValid = false;
-            $nameErr = "Database error: " . mysqli_stmt_error($stmt);
-            mysqli_stmt_close($stmt);
-            mysqli_close($conn);
+            $nameErr = "Database error: " . $result;
         }
     }
 }

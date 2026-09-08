@@ -1,5 +1,5 @@
 <?php
-require_once "damage_product_process.php";
+require_once __DIR__ . "/../../controllers/vendor_controller/damage_product_process.php";
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
@@ -9,11 +9,11 @@ unset($_SESSION['flash']);
 <head>
     <meta charset="UTF-8">
     <title>Check Damage Product - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
 
     <div class="container">
         <h2>Report Damaged Product</h2>
@@ -50,9 +50,11 @@ unset($_SESSION['flash']);
                 <th>Reported At</th>
             </tr>
             <?php
-            require "db.php";
-            $result = mysqli_query($conn, "SELECT * FROM damage_reports ORDER BY id DESC");
-            while ($row = mysqli_fetch_assoc($result)):
+            require __DIR__ . "/../../config/config.php";
+            require __DIR__ . "/../../models/vendor_model.php";
+            $reports = get_damage_reports($conn);
+            mysqli_close($conn);
+            foreach ($reports as $row):
             ?>
             <tr>
                 <td><?= $row['id']; ?></td>
@@ -62,9 +64,7 @@ unset($_SESSION['flash']);
                 <td><?= $row['reported_at']; ?></td>
             </tr>
             <?php
-            endwhile;
-            mysqli_free_result($result);
-            mysqli_close($conn);
+            endforeach;
             ?>
         </table>
     </div>

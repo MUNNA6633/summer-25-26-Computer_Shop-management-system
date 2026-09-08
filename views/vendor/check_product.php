@@ -1,5 +1,5 @@
 <?php
-require "db.php";
+require_once __DIR__ . "/../../config/config.php";
 
 // ---------- AJAX branch: runs only when JavaScript calls this same file ----------
 if (isset($_GET['ajax'])) {
@@ -56,11 +56,11 @@ mysqli_close($conn);
 <head>
     <meta charset="UTF-8">
     <title>Check Product - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php";; ?>
 
     <div class="container">
         <h2>Check Product / Inventory</h2>

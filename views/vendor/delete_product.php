@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "db.php";
+require __DIR__ . "/../../config/config.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST["id"]) && ctype_digit((string)$_POST["id"])) {
     $id = (int)$_POST["id"];

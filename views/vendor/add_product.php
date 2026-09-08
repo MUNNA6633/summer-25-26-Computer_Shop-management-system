@@ -1,5 +1,5 @@
 <?php
-require_once "add_product_process.php";
+require_once __DIR__ . "/../../controllers/vendor_controller/add_product_process.php";
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
@@ -9,11 +9,11 @@ unset($_SESSION['flash']);
 <head>
     <meta charset="UTF-8">
     <title>Set Wholesale Price - Vendor System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include 'navbar.php'; ?>
+    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
 
     <div class="container">
         <h2>Add Product / Set Wholesale Price</h2>
@@ -59,9 +59,11 @@ unset($_SESSION['flash']);
                 <th>Quantity</th>
             </tr>
             <?php
-            require "db.php";
-            $result = mysqli_query($conn, "SELECT * FROM products ORDER BY id DESC");
-            while ($row = mysqli_fetch_assoc($result)):
+            require __DIR__ . "/../../config/config.php";
+            require __DIR__ . "/../../models/vendor_model.php";
+            $existingProducts = get_products($conn);
+            mysqli_close($conn);
+            foreach ($existingProducts as $row):
             ?>
             <tr>
                 <td><?= $row['id']; ?></td>
@@ -72,9 +74,7 @@ unset($_SESSION['flash']);
                 <td><?= $row['quantity']; ?></td>
             </tr>
             <?php
-            endwhile;
-            mysqli_free_result($result);
-            mysqli_close($conn);
+            endforeach;
             ?>
         </table>
     </div>
