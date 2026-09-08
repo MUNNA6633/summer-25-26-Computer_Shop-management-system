@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../controllers/vendor_controller/damage_product_process.php";
+require_once "../../controllers/vendor_controller/damage_product_process.php";
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
@@ -13,7 +13,7 @@ unset($_SESSION['flash']);
 </head>
 <body>
 
-    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
+    <?php include '../../controllers/vendor_controller/navbar.php'; ?>
 
     <div class="container">
         <h2>Report Damaged Product</h2>
@@ -25,8 +25,13 @@ unset($_SESSION['flash']);
         <?php endif; ?>
 
         <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" novalidate>
-            <label for="product">Product Name / ID</label>
-            <input type="text" id="product" name="product" placeholder="Enter product name or ID" value="<?= $product ?>">
+            <label for="productSearch">Product</label>
+            <div class="search-box">
+                <input type="text" id="productSearch" placeholder="Search by product name or category"
+                       autocomplete="off" value="<?= $product ?>">
+                <div id="productSuggestions" class="suggestions"></div>
+            </div>
+            <input type="hidden" id="product" name="product" value="<?= $product ?>">
             <?php if ($productErr): ?><span class="error"><?= $productErr ?></span><?php endif; ?>
 
             <label for="damage_qty">Damaged Quantity</label>
@@ -50,8 +55,8 @@ unset($_SESSION['flash']);
                 <th>Reported At</th>
             </tr>
             <?php
-            require __DIR__ . "/../../config/config.php";
-            require __DIR__ . "/../../models/vendor_model.php";
+            require "../../config/config.php";
+            require "../../models/vendor_model.php";
             $reports = get_damage_reports($conn);
             mysqli_close($conn);
             foreach ($reports as $row):
@@ -68,6 +73,78 @@ unset($_SESSION['flash']);
             ?>
         </table>
     </div>
+    <script>
+        // Escapes text before inserting into the page (basic XSS protection)
+        function esc(value) {
+            var div = document.createElement('div');
+            div.textContent = (value === null || value === undefined) ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        var searchBox = document.getElementById('productSearch');
+        var suggestions = document.getElementById('productSuggestions');
+        var hiddenProduct = document.getElementById('product');
+
+        // Renders the dropdown list under the search box
+        function showSuggestions(products) {
+            if (products.length === 0) {
+                suggestions.innerHTML = '<div class="suggestion-empty">No matching products.</div>';
+                suggestions.style.display = 'block';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < products.length; i++) {
+                var p = products[i];
+                html += '<div class="suggestion-item" data-name="' + esc(p.name) + '">' +
+                    esc(p.name) + ' <span class="suggestion-meta">(' + esc(p.category) +
+                    ' - in stock: ' + esc(p.quantity) + ')</span></div>';
+            }
+            suggestions.innerHTML = html;
+            suggestions.style.display = 'block';
+        }
+
+        // Fetches matches from the same endpoint check_product.php uses
+        function runSearch(term) {
+            if (term === '') {
+                suggestions.style.display = 'none';
+                return;
+            }
+            fetch('../../controllers/ajax_controller.php?action=search_products&q=' + encodeURIComponent(term))
+                .then(function (response) { return response.json(); })
+                .then(showSuggestions)
+                .catch(function () {
+                    suggestions.innerHTML = '<div class="suggestion-empty">Something went wrong.</div>';
+                    suggestions.style.display = 'block';
+                });
+        }
+
+        // Debounce: wait 300ms after the last keystroke before searching
+        var searchTimer = null;
+        searchBox.addEventListener('input', function () {
+            hiddenProduct.value = '';               // typing invalidates any previous selection
+            clearTimeout(searchTimer);
+            var term = searchBox.value.trim();
+            searchTimer = setTimeout(function () { runSearch(term); }, 300);
+        });
+
+        // Clicking a suggestion selects that exact product
+        suggestions.addEventListener('click', function (e) {
+            var item = e.target.closest('.suggestion-item');
+            if (!item) return;
+            var name = item.getAttribute('data-name');
+            searchBox.value = name;
+            hiddenProduct.value = name;
+            suggestions.style.display = 'none';
+        });
+
+        // Hide the dropdown when clicking anywhere else on the page
+        document.addEventListener('click', function (e) {
+            if (e.target !== searchBox) {
+                suggestions.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 </html>

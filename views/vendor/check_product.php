@@ -1,66 +1,15 @@
 <?php
-require_once __DIR__ . "/../../config/config.php";
-
-// ---------- AJAX branch: runs only when JavaScript calls this same file ----------
-if (isset($_GET['ajax'])) {
-    header('Content-Type: application/json');
-
-    $q = trim($_GET['q'] ?? '');
-    $products = [];
-
-    if ($q === '') {
-        // No search term yet - return everything
-        $stmt = mysqli_prepare(
-            $conn,
-            "SELECT id, name, category, wholesale_price, retail_price, quantity
-             FROM products ORDER BY name ASC"
-        );
-        mysqli_stmt_execute($stmt);
-    } else {
-        $like = "%" . $q . "%";
-        $stmt = mysqli_prepare(
-            $conn,
-            "SELECT id, name, category, wholesale_price, retail_price, quantity
-             FROM products WHERE name LIKE ? OR category LIKE ? ORDER BY name ASC"
-        );
-        mysqli_stmt_bind_param($stmt, "ss", $like, $like);
-        mysqli_stmt_execute($stmt);
-    }
-
-    // bind_result works without needing the mysqlnd driver
-    mysqli_stmt_bind_result($stmt, $id, $name, $category, $wholesale_price, $retail_price, $quantity);
-
-    while (mysqli_stmt_fetch($stmt)) {
-        $products[] = [
-            "id" => $id,
-            "name" => $name,
-            "category" => $category,
-            "wholesale_price" => $wholesale_price,
-            "retail_price" => $retail_price,
-            "quantity" => $quantity,
-        ];
-    }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-
-    echo json_encode($products);
-    exit;
-}
-
-// ---------- Normal branch: a real visitor loading the page ----------
-mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Check Product - Vendor System</title>
-<link rel="stylesheet" href="../../assets/vendor_style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css">
 </head>
 <body>
 
-    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php";; ?>
+    <?php include '../../controllers/vendor_controller/navbar.php'; ?>
 
     <div class="container">
         <h2>Check Product / Inventory</h2>
@@ -97,7 +46,9 @@ mysqli_close($conn);
 
         // Builds one <tr> for a single product
         function buildRow(p) {
-            return '<tr>' +
+            var lowStock = Number(p.quantity) < 3;
+            var rowClass = lowStock ? ' class="low-stock-row"' : '';
+            return '<tr' + rowClass + '>' +
                 '<td>' + esc(p.id) + '</td>' +
                 '<td>' + esc(p.name) + '</td>' +
                 '<td>' + esc(p.category) + '</td>' +
@@ -109,7 +60,7 @@ mysqli_close($conn);
 
         // Fetches results from this same file's AJAX branch and refreshes the table
         function runSearch(term) {
-            fetch('check_product.php?ajax=1&q=' + encodeURIComponent(term))
+            fetch('../../controllers/ajax_controller.php?action=search_products&q=' + encodeURIComponent(term))
                 .then(function (response) { return response.json(); })
                 .then(function (products) {
                     var tbody = document.getElementById('productTable');
