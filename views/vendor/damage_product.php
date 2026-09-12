@@ -85,7 +85,6 @@ unset($_SESSION['flash']);
         var suggestions = document.getElementById('productSuggestions');
         var hiddenProduct = document.getElementById('product');
 
-        // Renders the dropdown list under the search box
         function showSuggestions(products) {
             if (products.length === 0) {
                 suggestions.innerHTML = '<div class="suggestion-empty">No matching products.</div>';
@@ -104,7 +103,6 @@ unset($_SESSION['flash']);
             suggestions.style.display = 'block';
         }
 
-        // Fetches matches from the same endpoint check_product.php uses
         function runSearch(term) {
             if (term === '') {
                 suggestions.style.display = 'none';
@@ -119,7 +117,6 @@ unset($_SESSION['flash']);
                 });
         }
 
-        // Debounce: wait 300ms after the last keystroke before searching
         var searchTimer = null;
         searchBox.addEventListener('input', function () {
             hiddenProduct.value = '';               // typing invalidates any previous selection
@@ -128,7 +125,6 @@ unset($_SESSION['flash']);
             searchTimer = setTimeout(function () { runSearch(term); }, 300);
         });
 
-        // Clicking a suggestion selects that exact product
         suggestions.addEventListener('click', function (e) {
             var item = e.target.closest('.suggestion-item');
             if (!item) return;
@@ -138,7 +134,6 @@ unset($_SESSION['flash']);
             suggestions.style.display = 'none';
         });
 
-        // Hide the dropdown when clicking anywhere else on the page
         document.addEventListener('click', function (e) {
             if (e.target !== searchBox) {
                 suggestions.style.display = 'none';

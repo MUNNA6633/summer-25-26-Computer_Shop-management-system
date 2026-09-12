@@ -30,21 +30,19 @@
                 <th>Quantity</th>
             </tr>
             <tbody id="productTable">
-                <!-- Rows are filled in by JavaScript after the AJAX search runs -->
+              
             </tbody>
         </table>
     </div>
 
     <script>
-        // Escapes text before inserting it into the page, so product names/categories
-        // can never break the HTML or run as script (basic XSS protection)
+    
         function esc(value) {
             var div = document.createElement('div');
             div.textContent = (value === null || value === undefined) ? '' : String(value);
             return div.innerHTML;
         }
 
-        // Builds one <tr> for a single product
         function buildRow(p) {
             var lowStock = Number(p.quantity) < 3;
             var rowClass = lowStock ? ' class="low-stock-row"' : '';
@@ -58,7 +56,6 @@
                 '</tr>';
         }
 
-        // Fetches results from this same file's AJAX branch and refreshes the table
         function runSearch(term) {
             fetch('../../controllers/ajax_controller.php?action=search_products&q=' + encodeURIComponent(term))
                 .then(function (response) { return response.json(); })
@@ -85,8 +82,7 @@
                 });
         }
 
-        // Debounce: wait 300ms after the last keystroke before searching,
-        // so we don't fire a request on every single letter typed
+
         var searchTimer = null;
         var searchBox = document.getElementById('productSearch');
 
@@ -98,7 +94,6 @@
             }, 300);
         });
 
-        // Load the full product list once when the page first opens
         runSearch('');
     </script>
 
