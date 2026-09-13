@@ -1,0 +1,69 @@
+<?php
+require_once '../config/database.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_announcement'])) {
+    $title = trim($_POST['title']);
+    $content = trim($_POST['content']);
+
+    if (!empty($title) && !empty($content)) {
+        $stmt = $conn->prepare("INSERT INTO announcements (title, content) VALUES (?, ?)");
+        $stmt->bind_param("ss", $title, $content);
+        $stmt->execute();
+        header('Location: announcements.php');
+        exit;
+    }
+}
+
+if (isset($_GET['delete'])) {
+    $id = intval($_GET['delete']);
+    $conn->query("DELETE FROM announcements WHERE id = $id");
+    header('Location: announcements.php');
+    exit;
+}
+
+include 'header.php';
+$announcements = $conn->query("SELECT * FROM announcements ORDER BY created_at DESC");
+?>
+
+<h2>Manage Announcements</h2>
+
+<div class="card">
+    <h3>Post Announcement to Frontend</h3>
+    <form action="announcements.php" method="POST">
+        <div class="form-group">
+            <input type="text" name="title" placeholder="Announcement Title" required>
+        </div>
+        <div class="form-group">
+            <textarea name="content" placeholder="Content text..." rows="4" required></textarea>
+        </div>
+        <button type="submit" name="post_announcement" class="btn">Post Announcement</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Current Announcements</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while($row = $announcements->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo $row['created_at']; ?></td>
+                <td><?php echo htmlspecialchars($row['title']); ?></td>
+                <td><?php echo htmlspecialchars($row['content']); ?></td>
+                <td>
+                    <a href="announcements.php?delete=<?php echo $row['id']; ?>" class="btn-danger" onclick="return confirm('Delete this announcement?')">Delete</a>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php include 'footer.php'; ?>

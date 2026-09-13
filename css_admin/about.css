@@ -1,0 +1,67 @@
+/* Selector {
+    Property: value;
+} */
+
+/* 9 */
+* {
+    text-align: right;
+}
+
+/* 3 */
+body {
+    background-color: blanchedalmond;
+}
+
+/* 1 */
+h2 {
+    color: red;
+}
+
+/* 2 */
+p {
+    color: red;
+    text-align: center;
+    border: 2px solid rgb(255, 176, 170);
+    cursor: pointer;
+    /* text-decoration: line-through; */
+    /* text-transform: uppercase; */
+    line-height: 20px;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 100%;
+    font-family: "Poiret One", "Times New Roman", Times, serif;
+}
+
+img {
+    float: left;
+}
+
+footer {
+    clear: both;
+    text-align: center;
+}
+
+/* 4 */
+li {
+    list-style: none;
+    display: inline-block;
+}
+
+/* 6 */
+.webtext {
+    border: 2px dashed green;
+}
+
+/* 7  */
+.active {
+    color: blue;
+}
+
+/* 8 */
+#div1 {
+    background-color: rgba(0, 0, 255, 0.2);
+}
+
+#div2 {
+    background-color: rgba(0, 255, 0, 0.2);
+}
