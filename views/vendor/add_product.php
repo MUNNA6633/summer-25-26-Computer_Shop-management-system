@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../../controllers/vendor_controller/add_product_process.php";
+require_once "../../controllers/vendor_controller/add_product_process.php";
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
@@ -9,11 +9,16 @@ unset($_SESSION['flash']);
 <head>
     <meta charset="UTF-8">
     <title>Set Wholesale Price - Vendor System</title>
-    <link rel="stylesheet" href="../../assets/vendor_style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css?v=2">
 </head>
 <body>
 
-    <?php include __DIR__ . "/../../controllers/vendor_controller/navbar.php"; ?>
+    <a href="../../controllers/logout.php"
+       style="position:absolute; top:15px; right:15px; background-color:#e74c3c; color:#fff;
+              padding:8px 16px; border-radius:4px; text-decoration:none; font-weight:bold;
+              font-family:Arial, sans-serif; z-index:999;">Logout</a>
+
+    <?php include '../../controllers/vendor_controller/navbar.php'; ?>
 
     <div class="container">
         <h2>Add Product / Set Wholesale Price</h2>
@@ -59,8 +64,8 @@ unset($_SESSION['flash']);
                 <th>Quantity</th>
             </tr>
             <?php
-            require __DIR__ . "/../../config/config.php";
-            require __DIR__ . "/../../models/vendor_model.php";
+            require "../../config/config.php";
+            require "../../models/vendor_model.php";
             $existingProducts = get_products($conn);
             mysqli_close($conn);
             foreach ($existingProducts as $row):

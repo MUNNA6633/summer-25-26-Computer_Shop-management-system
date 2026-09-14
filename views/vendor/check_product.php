@@ -5,9 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Check Product - Vendor System</title>
-    <link rel="stylesheet" href="../../assets/vendor_style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css?v=2">
 </head>
 <body>
+
+    <a href="../../controllers/logout.php"
+       style="position:absolute; top:15px; right:15px; background-color:#e74c3c; color:#fff;
+              padding:8px 16px; border-radius:4px; text-decoration:none; font-weight:bold;
+              font-family:Arial, sans-serif; z-index:999;">Logout</a>
 
     <?php include '../../controllers/vendor_controller/navbar.php'; ?>
 
@@ -30,19 +35,21 @@
                 <th>Quantity</th>
             </tr>
             <tbody id="productTable">
-              
+                <!-- Rows are filled in by JavaScript after the AJAX search runs -->
             </tbody>
         </table>
     </div>
 
     <script>
-    
+        // Escapes text before inserting it into the page, so product names/categories
+        // can never break the HTML or run as script (basic XSS protection)
         function esc(value) {
             var div = document.createElement('div');
             div.textContent = (value === null || value === undefined) ? '' : String(value);
             return div.innerHTML;
         }
 
+        // Builds one <tr> for a single product
         function buildRow(p) {
             var lowStock = Number(p.quantity) < 3;
             var rowClass = lowStock ? ' class="low-stock-row"' : '';
@@ -56,6 +63,7 @@
                 '</tr>';
         }
 
+        // Fetches results from this same file's AJAX branch and refreshes the table
         function runSearch(term) {
             fetch('../../controllers/ajax_controller.php?action=search_products&q=' + encodeURIComponent(term))
                 .then(function (response) { return response.json(); })
@@ -82,7 +90,8 @@
                 });
         }
 
-
+        // Debounce: wait 300ms after the last keystroke before searching,
+        // so we don't fire a request on every single letter typed
         var searchTimer = null;
         var searchBox = document.getElementById('productSearch');
 
@@ -94,6 +103,7 @@
             }, 300);
         });
 
+        // Load the full product list once when the page first opens
         runSearch('');
     </script>
 

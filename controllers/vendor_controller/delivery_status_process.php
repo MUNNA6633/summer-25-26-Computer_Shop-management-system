@@ -17,7 +17,7 @@ function cleanInput($data)
     return htmlspecialchars(stripslashes(trim($data)));
 }
 
-// Process form 
+// Process form when submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Order ID / reference
@@ -42,6 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $isValid = !$orderIdErr && !$statusErr;
 
+    // Only update the database once every field passes validation
     if ($isValid) {
         require __DIR__ . "/../../config/config.php";
         require __DIR__ . "/../../models/vendor_model.php";
