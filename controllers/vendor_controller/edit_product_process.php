@@ -3,7 +3,8 @@ session_start();
 require __DIR__ . "/../../config/config.php";
 require __DIR__ . "/../../models/vendor_model.php";
 
-
+// Get the product ID from either the URL (GET, first visit) or the
+// hidden form field (POST, after submitting changes)
 $id = $_GET['id'] ?? $_POST['id'] ?? null;
 
 if (!$id || !ctype_digit((string)$id)) {
@@ -107,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 } else {
+    // First visit (GET): load the existing product so the form is pre-filled
     $product = get_product($conn, $id);
 
     if (!$product) {

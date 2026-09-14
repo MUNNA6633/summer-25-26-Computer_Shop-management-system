@@ -21,6 +21,21 @@ body {
     text-decoration: underline;
 }
 
+.logout-btn {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    background-color: #e74c3c;
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-right: 0 !important;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+    text-decoration: none !important;
+}
+
 .container {
     width: 90%;
     max-width: 900px;
@@ -157,5 +172,5 @@ form button:hover {
 }
 
 tr.low-stock-row {
-    background-color: #ffb3b3;
+    background-color: #ffe5e5;
 }

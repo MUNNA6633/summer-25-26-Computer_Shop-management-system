@@ -1,18 +1,13 @@
 <?php
 
 
-
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'vendor_system');
 
-
 define('APP_NAME',   'VendorSys');
-define('CURRENCY',   '$');
-define('LOW_STOCK',  5);   
-define('SESSION_TIMEOUT', 1800); 
-
+define('SESSION_TIMEOUT', 1800);
 
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
@@ -30,4 +25,5 @@ if (!$conn) {
         . mysqli_connect_error());
 }
 mysqli_set_charset($conn, 'utf8mb4');
+
 

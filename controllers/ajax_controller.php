@@ -1,27 +1,11 @@
 <?php
-// ================================================================
-// CONTROLLER: AJAX / JSON endpoints
-// The dashboard pages call these with fetch() and redraw a table
-// without reloading the page.
-//
-// All SQL lives in models/vendor_model.php - this file only
-// routes requests to those functions and returns JSON. No raw SQL
-// should ever be added here.
-//
-// NOTE: schema.sql has no `users` table yet, so there is no login
-// system in this project. Because of that, this controller has NO
-// role checks (there is no admin/vendor/etc. to check against). Once
-// a `users` table + login exist, add an is_logged_in() / role check
-// at the top of this function the same way the reference example
-// does, before opening this up on a real server.
-// ================================================================
+
 
 require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . "/../models/vendor_model.php";
 
 header('Content-Type: application/json');
 
-/* ---------- small helper so every branch below can stay one line ---------- */
 function json_out($data, $code = 200) {
     http_response_code($code);
     echo json_encode($data);

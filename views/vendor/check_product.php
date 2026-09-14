@@ -5,9 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Check Product - Vendor System</title>
-    <link rel="stylesheet" href="../../assets/vendor_style.css">
+    <link rel="stylesheet" href="../../assets/vendor_style.css?v=2">
 </head>
 <body>
+
+    <a href="../../controllers/logout.php"
+       style="position:absolute; top:15px; right:15px; background-color:#e74c3c; color:#fff;
+              padding:8px 16px; border-radius:4px; text-decoration:none; font-weight:bold;
+              font-family:Arial, sans-serif; z-index:999;">Logout</a>
 
     <?php include '../../controllers/vendor_controller/navbar.php'; ?>
 
@@ -30,13 +35,12 @@
                 <th>Quantity</th>
             </tr>
             <tbody id="productTable">
-              
             </tbody>
         </table>
     </div>
 
     <script>
-    
+
         function esc(value) {
             var div = document.createElement('div');
             div.textContent = (value === null || value === undefined) ? '' : String(value);
