@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
-/* ================= Products / Discounts (Create, Read, Update, Delete) ================= */
+/*  Products / Discounts  */
 
 function get_products_with_discount() {
     global $conn;
@@ -11,9 +11,7 @@ function get_products_with_discount() {
     return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : [];
 }
 
-// Also used to set a discount for the first time - discount_percent already
-// exists (default 0) on every product row, so "create" and "update" are the
-// same UPDATE statement.
+
 function apply_discount($product_id, $discount_percent) {
     global $conn;
     $stmt = mysqli_prepare($conn,
@@ -22,7 +20,7 @@ function apply_discount($product_id, $discount_percent) {
     return mysqli_stmt_execute($stmt);
 }
 
-// Delete = clear the discount back to 0.
+
 function remove_discount($product_id) {
     global $conn;
     $stmt = mysqli_prepare($conn,
@@ -31,7 +29,7 @@ function remove_discount($product_id) {
     return mysqli_stmt_execute($stmt);
 }
 
-/* ================= Orders (Create, Read, Update, Delete) ================= */
+/*  Orders (Create, Read, Update, Delete)  */
 
 function get_all_orders() {
     global $conn;
@@ -45,8 +43,7 @@ function get_all_orders() {
     return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : [];
 }
 
-// Addresses to pick from when the seller creates a manual order - one
-// per saved customer address, same "addresses" table the customer flow uses.
+
 function get_addresses_for_order_form() {
     global $conn;
     $res = mysqli_query($conn,
@@ -65,10 +62,7 @@ function get_products_for_order_form() {
     return $res ? mysqli_fetch_all($res, MYSQLI_ASSOC) : [];
 }
 
-// Seller-side manual order entry (e.g. a phone/in-store sale). Writes to the
-// exact same orders / order_items / payments tables the customer checkout
-// flow uses, so every order - customer-placed or seller-entered - lives in
-// one place.
+
 function create_order($address_id, $product_id, $quantity, $payment_method) {
     global $conn;
 
@@ -142,7 +136,7 @@ function delete_order($order_id) {
     return mysqli_stmt_execute($stmt);
 }
 
-/* ================= Sell Summary ================= */
+/*  Sell Summary  */
 
 function get_sales_summary() {
     global $conn;

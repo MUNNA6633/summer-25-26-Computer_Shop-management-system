@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
 
-/* ================= Dashboard ================= */
+/*  Dashboard  */
 
 function get_dashboard_counts() {
     global $conn;
@@ -16,7 +16,7 @@ function get_dashboard_counts() {
     ];
 }
 
-/* ================= Vendors ================= */
+/*  Vendors  */
 
 function get_vendors() {
     global $conn;
@@ -39,7 +39,7 @@ function delete_vendor($id) {
     return mysqli_stmt_execute($stmt);
 }
 
-/* ================= Announcements ================= */
+/*  Announcements  */
 
 function get_announcements() {
     global $conn;
@@ -62,7 +62,7 @@ function delete_announcement($id) {
     return mysqli_stmt_execute($stmt);
 }
 
-/* ================= Reviews ================= */
+/*  Reviews  */
 
 function get_reviews() {
     global $conn;

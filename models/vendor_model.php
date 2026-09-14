@@ -1,7 +1,7 @@
 <?php
 
 
-/* ================= Products ================= */
+/*  Products */
 
 function get_products($conn) {
     $res = mysqli_query($conn, "SELECT * FROM products ORDER BY id DESC");
@@ -33,7 +33,6 @@ function get_low_stock_products($conn, $threshold) {
     return $rows;
 }
 
-// Returns one product as an assoc array, or null if the ID doesn't exist.
 function get_product($conn, $id) {
     $stmt = mysqli_prepare(
         $conn,
@@ -58,7 +57,6 @@ function get_product($conn, $id) {
     ];
 }
 
-// Returns true on success, or a string with the DB error on failure.
 function insert_product($conn, $name, $category, $wholesale_price, $retail_price, $quantity) {
     $stmt = mysqli_prepare(
         $conn,
@@ -73,7 +71,7 @@ function insert_product($conn, $name, $category, $wholesale_price, $retail_price
     return $ok ? true : $error;
 }
 
-// Returns true on success, or a string with the DB error on failure.
+
 function update_product($conn, $id, $name, $category, $wholesale_price, $retail_price, $quantity) {
     $stmt = mysqli_prepare(
         $conn,
@@ -96,7 +94,7 @@ function delete_product_by_id($conn, $id) {
     return $ok;
 }
 
-/* ================= Damage reports ================= */
+/*  Damage reports  */
 
 function get_damage_reports($conn) {
     $res = mysqli_query($conn, "SELECT * FROM damage_reports ORDER BY id DESC");
@@ -114,7 +112,6 @@ function search_damage_reports($conn, $term) {
     return $rows;
 }
 
-// Returns true on success, or a string with the DB error on failure.
 function insert_damage_report($conn, $product, $damage_qty, $note) {
     $stmt = mysqli_prepare(
         $conn,
@@ -129,7 +126,7 @@ function insert_damage_report($conn, $product, $damage_qty, $note) {
     return $ok ? true : $error;
 }
 
-/* ================= Deliveries ================= */
+/*  Deliveries  */
 
 function get_deliveries($conn) {
     $res = mysqli_query($conn, "SELECT * FROM deliveries ORDER BY updated_at DESC");
