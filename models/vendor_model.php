@@ -1,12 +1,5 @@
 <?php
-// ================================================================
-// MODEL: all SQL for the vendor system lives here, and nowhere else.
-// Every other file calls these functions instead of writing its own
-// mysqli_query() / mysqli_prepare() calls.
-//
-// Every function expects an open $conn (from config.php)
-// to be passed in as the first argument.
-// ================================================================
+
 
 /* ================= Products ================= */
 
