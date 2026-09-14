@@ -10,7 +10,7 @@
             <span>Hi, <?= htmlspecialchars($_SESSION['customer_name']) ?></span>
             <a href="../../controllers/customer_controller/logout.php">Logout</a>
         <?php else: ?>
-            <a href="login.php">Login</a>
+            <a href="../../index.php">Login</a>
         <?php endif; ?>
     </div>
 </nav>

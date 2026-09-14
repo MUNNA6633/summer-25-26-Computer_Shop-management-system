@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../models/customer_model.php';
-if (!isset($_SESSION['customer_id'])) { header('Location: login.php'); exit; }
+if (!isset($_SESSION['customer_id'])) { header('Location: ../../index.php'); exit; }
 $cart = get_cart($_SESSION['customer_id']);
 $total = 0;
 foreach ($cart as $c) { $total += $c['retail_price'] * $c['quantity']; }

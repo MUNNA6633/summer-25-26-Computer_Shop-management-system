@@ -1,5 +1,5 @@
 <?php
-require_once 'config/database.php';
+require_once 'config/config.php';
 
 $message = '';
 
@@ -28,15 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Submit Customer Review</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/admin_style.css">
 </head>
 <body>
     <nav class="public-nav">
         <h2 style="color: white;">Tech Computer Shop</h2>
         <div>
-            <a href="index.php">Home</a>
+            <a href="home.php">Home</a>
             <a href="submit_review.php">Leave Review</a>
-            <a href="admin/login.php">Admin Login</a>
+            <a href="index.php">Sign In</a>
         </div>
     </nav>
 

@@ -7,6 +7,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'vendor_system');
 
 define('APP_NAME',   'VendorSys');
+define('LOW_STOCK',  5);    // a product at or below this quantity is "low stock"
 define('SESSION_TIMEOUT', 1800);
 
 if (session_status() === PHP_SESSION_NONE) {

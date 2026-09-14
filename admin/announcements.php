@@ -1,28 +1,25 @@
 <?php
-require_once '../config/database.php';
+require_once __DIR__ . '/../models/admin_model.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_announcement'])) {
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
 
     if (!empty($title) && !empty($content)) {
-        $stmt = $conn->prepare("INSERT INTO announcements (title, content) VALUES (?, ?)");
-        $stmt->bind_param("ss", $title, $content);
-        $stmt->execute();
+        add_announcement($title, $content);
         header('Location: announcements.php');
         exit;
     }
 }
 
 if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']);
-    $conn->query("DELETE FROM announcements WHERE id = $id");
+    delete_announcement(intval($_GET['delete']));
     header('Location: announcements.php');
     exit;
 }
 
 include 'header.php';
-$announcements = $conn->query("SELECT * FROM announcements ORDER BY created_at DESC");
+$announcements = get_announcements();
 ?>
 
 <h2>Manage Announcements</h2>
@@ -52,16 +49,20 @@ $announcements = $conn->query("SELECT * FROM announcements ORDER BY created_at D
             </tr>
         </thead>
         <tbody>
-            <?php while($row = $announcements->fetch_assoc()): ?>
+            <?php if (empty($announcements)): ?>
             <tr>
-                <td><?php echo $row['created_at']; ?></td>
+                <td colspan="4">No announcements yet.</td>
+            </tr>
+            <?php else: foreach ($announcements as $row): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                 <td><?php echo htmlspecialchars($row['title']); ?></td>
                 <td><?php echo htmlspecialchars($row['content']); ?></td>
                 <td>
                     <a href="announcements.php?delete=<?php echo $row['id']; ?>" class="btn-danger" onclick="return confirm('Delete this announcement?')">Delete</a>
                 </td>
             </tr>
-            <?php endwhile; ?>
+            <?php endforeach; endif; ?>
         </tbody>
     </table>
 </div>

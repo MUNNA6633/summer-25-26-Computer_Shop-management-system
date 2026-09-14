@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['customer_id'])) { header('Location: login.php'); exit; }
+if (!isset($_SESSION['customer_id'])) { header('Location: ../../index.php'); exit; }
 $oid = $_SESSION['last_order_id'] ?? '—';
 ?>
 <!DOCTYPE html>

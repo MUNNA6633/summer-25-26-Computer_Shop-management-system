@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../models/customer_model.php';
-if (!isset($_SESSION['customer_id'])) { header('Location: ../../views/customer/login.php'); exit; }
+if (!isset($_SESSION['customer_id'])) { header('Location: ../../index.php'); exit; }
 
 $address_id = intval($_POST['address_id'] ?? 0);
 $payment = $_POST['payment_method'] ?? '';

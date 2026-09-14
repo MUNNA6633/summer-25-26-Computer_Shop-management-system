@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require_once __DIR__ . '/../models/admin_model.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_vendor'])) {
     $name = trim($_POST['vendor_name']);
@@ -7,23 +7,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_vendor'])) {
     $phone = trim($_POST['phone']);
 
     if (!empty($name) && !empty($email)) {
-        $stmt = $conn->prepare("INSERT INTO vendors (vendor_name, contact_email, phone) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $name, $email, $phone);
-        $stmt->execute();
+        add_vendor($name, $email, $phone);
         header('Location: vendors.php');
         exit;
     }
 }
 
 if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']);
-    $conn->query("DELETE FROM vendors WHERE id = $id");
+    delete_vendor(intval($_GET['delete']));
     header('Location: vendors.php');
     exit;
 }
 
 include 'header.php';
-$vendors = $conn->query("SELECT * FROM vendors ORDER BY id DESC");
+$vendors = get_vendors();
 ?>
 
 <h2>Manage Vendors</h2>
@@ -52,18 +49,22 @@ $vendors = $conn->query("SELECT * FROM vendors ORDER BY id DESC");
             </tr>
         </thead>
         <tbody>
-            <?php while($row = $vendors->fetch_assoc()): ?>
+            <?php if (empty($vendors)): ?>
+            <tr>
+                <td colspan="6">No vendors yet.</td>
+            </tr>
+            <?php else: foreach ($vendors as $row): ?>
             <tr>
                 <td><?php echo $row['id']; ?></td>
                 <td><?php echo htmlspecialchars($row['vendor_name']); ?></td>
                 <td><?php echo htmlspecialchars($row['contact_email']); ?></td>
                 <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                <td><span style="background: #22c55e; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;"><?php echo $row['status']; ?></span></td>
+                <td><span style="background: #22c55e; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;"><?php echo htmlspecialchars($row['status']); ?></span></td>
                 <td>
                     <a href="vendors.php?delete=<?php echo $row['id']; ?>" class="btn-danger" onclick="return confirm('Delete this vendor?')">Delete</a>
                 </td>
             </tr>
-            <?php endwhile; ?>
+            <?php endforeach; endif; ?>
         </tbody>
     </table>
 </div>

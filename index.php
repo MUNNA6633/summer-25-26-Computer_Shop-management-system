@@ -1,12 +1,12 @@
 <?php
 
-
-session_start();
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/models/customer_model.php';
 
 $users = [
-    'admin'    => ['password' => 'admin123',    'role' => 'admin',    'redirect' => 'views/admin/dashboard.php'],
+    'admin'    => ['password' => 'admin123',    'role' => 'admin',    'redirect' => 'admin/dashboard.php'],
     'vendor'   => ['password' => 'vendor123',   'role' => 'vendor',   'redirect' => 'views/vendor/add_product.php'],
-    'customer' => ['password' => 'customer123', 'role' => 'customer', 'redirect' => 'views/customer/dashboard.php'],
+    'customer' => ['password' => 'customer123', 'role' => 'customer', 'redirect' => 'views/customer/home.php'],
     'seller'   => ['password' => 'seller123',   'role' => 'seller',   'redirect' => 'views/seller/dashboard.php'],
 ];
 
@@ -21,8 +21,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($users[$username]) && $users[$username]['password'] === $password) {
         $_SESSION['username'] = $username;
         $_SESSION['role'] = $users[$username]['role'];
-        header('Location: ' . $users[$username]['redirect']);
-        exit;
+
+        // The customer role needs a real row in the customers table so
+        // cart/addresses/orders (which all key off customer_id) work -
+        // this attaches the hardcoded login to one seeded demo account.
+        if ($username === 'customer') {
+            $cust = get_customer_by_email('customer@example.com');
+            if ($cust) {
+                $_SESSION['customer_id'] = $cust['id'];
+                $_SESSION['customer_name'] = $cust['name'];
+            } else {
+                $error = 'Demo customer record not found - run schema.sql.';
+            }
+        }
+
+        if (!$error) {
+            header('Location: ' . $users[$username]['redirect']);
+            exit;
+        }
     } else {
         $error = 'Invalid username or password.';
     }

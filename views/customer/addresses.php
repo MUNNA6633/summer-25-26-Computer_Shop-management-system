@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../models/customer_model.php';
-if (!isset($_SESSION['customer_id'])) { header('Location: login.php'); exit; }
+if (!isset($_SESSION['customer_id'])) { header('Location: ../../index.php'); exit; }
 $cid = $_SESSION['customer_id'];
 $addresses = get_addresses($cid);
 $msg = $_SESSION['addr_msg'] ?? ''; unset($_SESSION['addr_msg']);
