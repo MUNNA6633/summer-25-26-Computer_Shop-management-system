@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS deliveries (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- A few sample orders so delivery_status.php has something to update/check
 INSERT INTO deliveries (order_id, status) VALUES
     ('ORD101', 'Pending'),
     ('ORD102', 'Shipped'),
